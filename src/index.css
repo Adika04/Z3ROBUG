@@ -1,0 +1,15 @@
+@import './styles/fonts.css';
+@import 'tailwindcss';
+@import './styles/theme.css';
+@import 'leaflet/dist/leaflet.css';
+
+@layer base {
+  body { @apply bg-background text-foreground font-sans antialiased; }
+  button, a, select { @apply cursor-pointer; }
+  button, input, select { @apply outline-none focus-visible:ring-2 focus-visible:ring-primary/40; }
+  button { @apply transition-colors; }
+}
+.leaflet-container { font-family: 'Inter', sans-serif; background: #e9eee7; }
+.leaflet-control-attribution { font-size: 9px !important; }
+.leaflet-popup-content-wrapper { border-radius: 10px; }
+.leaflet-popup-content { margin: 14px; }

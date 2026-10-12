@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+
+# Cache
+.cache/
+.vite/
+*.tsbuildinfo
+vite.config.*.timestamp-*
+
+# Environment secrets — NEVER commit these
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+*-debug.log*
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/settings.json
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Figma / AI tooling internals (not project source)
+.figma/
+.plugins/
+.opencode-skills/
+.claude-replay.*
+.tmp-*
+.mise.toml
