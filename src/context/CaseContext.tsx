@@ -19,7 +19,7 @@ type CaseContextType = {
   toast: string
   setToast: (msg: string) => void
   updateStatus: (item: Case, status: CaseStatus) => void
-  simulateTelegramReport: () => void
+  simulateTelegramReport: () => Promise<void>
   exportReport: () => void
   notifications: boolean
   setNotifications: (v: boolean) => void
@@ -85,30 +85,51 @@ export function CaseProvider({ children }: { children: ReactNode }) {
     )
   }
 
-  const simulateTelegramReport = () => {
-    const nextNum = 1049 + cases.length - initialCases.length
-    const newItem: Case = {
-      id: `JKR-${nextNum}`,
-      issue: 'Deep Pothole',
-      road: 'Jalan Sentul',
-      area: 'Kuala Lumpur',
-      priority: 5,
-      status: 'Assessed',
-      lat: 3.184 + (Math.random() - 0.5) * 0.03,
-      lng: 101.695 + (Math.random() - 0.5) * 0.03,
-      time: 'Just now',
-      image: samplePhotos[cases.length % samplePhotos.length],
-      date: new Date().toISOString().slice(0, 10),
-      history: ['Submitted', 'Assessed'],
-      justification:
-        'Gemini 2.5 Flash: Critical 6cm pothole identified on two-wheel traffic path. High hazard risk.',
-      reporterName: 'Telegram User @citizen_kl',
-      telegramChatId: 987654321,
-    }
+  const simulateTelegramReport = async () => {
+    try {
+      const response = await fetch('/api/simulate-telegram-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+      })
 
-    setCases((prev) => [newItem, ...prev])
-    setToast(`${newItem.id} received via Telegram Bot · P5 Critical (AI Scored)`)
-    setNotifications(true)
+      if (!response.ok) {
+        throw new Error('Simulation route failed')
+      }
+
+      const payload = await response.json()
+      const newItem = payload.caseItem as Case
+
+      setCases((prev) => [newItem, ...prev])
+      setToast(`${newItem.id} received via Telegram Bot · P${newItem.priority} ${newItem.priority >= 4 ? 'High' : 'Assessed'} (AI Scored)`)
+      setNotifications(true)
+      return
+    } catch (error) {
+      console.warn('Backend Telegram simulation failed, using local fallback:', error)
+
+      const nextNum = 1049 + cases.length - initialCases.length
+      const fallbackItem: Case = {
+        id: `JKR-${nextNum}`,
+        issue: 'Deep Pothole',
+        road: 'Jalan Sentul',
+        area: 'Kuala Lumpur',
+        priority: 5,
+        status: 'Assessed',
+        lat: 3.184 + (Math.random() - 0.5) * 0.03,
+        lng: 101.695 + (Math.random() - 0.5) * 0.03,
+        time: 'Just now',
+        image: samplePhotos[cases.length % samplePhotos.length],
+        date: new Date().toISOString().slice(0, 10),
+        history: ['Submitted', 'Assessed'],
+        justification:
+          'Gemini 3.5 Flash-Lite: Critical pothole identified on two-wheel traffic path. High hazard risk.',
+        reporterName: 'Telegram User @citizen_kl',
+        telegramChatId: 987654321,
+      }
+
+      setCases((prev) => [fallbackItem, ...prev])
+      setToast(`${fallbackItem.id} received via Telegram Bot · P5 Critical (fallback demo)`)
+      setNotifications(true)
+    }
   }
 
   const exportReport = () => {

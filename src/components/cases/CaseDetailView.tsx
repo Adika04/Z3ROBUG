@@ -103,10 +103,10 @@ export function CaseDetailView({
 
         {/* Right Column: AI Analysis, Status Pipeline, and Feedback */}
         <div className="space-y-6">
-          {/* AI Assessment Card (Gemini 2.5 Flash) */}
+          {/* AI Assessment Card (Gemini 3.5 Flash) */}
           <Panel>
             <Heading
-              title="AI Assessment — Gemini 2.5 Flash"
+              title="AI Assessment — Gemini 3.5 Flash"
               subtitle="Multimodal Road Damage Vision Pipeline"
               action={<Sparkles size={16} className="text-primary" />}
             />

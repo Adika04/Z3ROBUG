@@ -19,49 +19,20 @@ export async function analyzeRoadDamageWithGemini(
   imageBase64OrUrl: string,
   apiKey?: string
 ): Promise<GeminiAssessmentResult> {
-  const key = apiKey || import.meta.env.VITE_GEMINI_API_KEY
+  void apiKey
 
-  if (key) {
-    try {
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            contents: [
-              {
-                parts: [
-                  { text: GEMINI_SYSTEM_INSTRUCTION },
-                  { text: 'Analyze this road damage image and assess its hazard severity.' },
-                  imageBase64OrUrl.startsWith('data:')
-                    ? {
-                        inline_data: {
-                          mime_type: 'image/jpeg',
-                          data: imageBase64OrUrl.split(',')[1],
-                        },
-                      }
-                    : { text: `Image URL: ${imageBase64OrUrl}` },
-                ],
-              },
-            ],
-            generationConfig: {
-              responseMimeType: 'application/json',
-            },
-          }),
-        }
-      )
+  try {
+    const response = await fetch('/api/analyze-road-damage', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ imageBase64: imageBase64OrUrl }),
+    })
 
-      if (response.ok) {
-        const data = await response.json()
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text
-        if (text) {
-          return JSON.parse(text) as GeminiAssessmentResult
-        }
-      }
-    } catch (err) {
-      console.warn('Gemini API call fell back to deterministic heuristic:', err)
+    if (response.ok) {
+      return (await response.json()) as GeminiAssessmentResult
     }
+  } catch (err) {
+    console.warn('Backend AI analysis request failed, falling back to deterministic heuristic:', err)
   }
 
   // Deterministic fallback heuristic for hackathon stage demos & offline development
