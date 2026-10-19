@@ -5,6 +5,7 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/your-repo-name/', // Adjust this to your actual repo name or leave it as '/' if not using a subpath
   plugins: [
     react(),
     tailwindcss(),
