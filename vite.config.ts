@@ -5,7 +5,10 @@ import { fileURLToPath, URL } from 'node:url'
 
 // https://vite.dev/config/
 export default defineConfig({
+<<<<<<< HEAD
   base: './',
+=======
+>>>>>>> 27ff6b9a22721804c043fd1f12ba954b241014e7
   plugins: [
     react(),
     tailwindcss(),
