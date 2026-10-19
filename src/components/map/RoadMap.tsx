@@ -1,8 +1,19 @@
 import React, { useEffect, useRef } from 'react'
 import L from 'leaflet'
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
+import markerIcon from 'leaflet/dist/images/marker-icon.png'
+import markerShadow from 'leaflet/dist/images/marker-shadow.png'
 import { Radio } from 'lucide-react'
 import type { Case } from '../../types'
 import { priorityColors, priorityNames } from '../../data/initialCases'
+
+// Fix Leaflet default icon paths broken by bundlers (Vite/Webpack)
+delete (L.Icon.Default.prototype as any)._getIconUrl
+L.Icon.Default.mergeOptions({
+  iconUrl: markerIcon,
+  iconRetinaUrl: markerIcon2x,
+  shadowUrl: markerShadow,
+})
 
 export function RoadMap({
   cases,
@@ -19,11 +30,11 @@ export function RoadMap({
 
   useEffect(() => {
     if (!ref.current) return
-    map.current = L.map(ref.current, { zoomControl: false }).setView([3.151, 101.684], 11)
+    map.current = L.map(ref.current, { zoomControl: false }).setView([3.151, 101.684], 12)
 
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution:
-        '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> © CARTO',
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       maxZoom: 19,
     }).addTo(map.current)
 

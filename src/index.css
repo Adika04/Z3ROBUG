@@ -1,7 +1,7 @@
+@import 'leaflet/dist/leaflet.css';
 @import './styles/fonts.css';
 @import 'tailwindcss';
 @import './styles/theme.css';
-@import 'leaflet/dist/leaflet.css';
 
 @layer base {
   body { @apply bg-background text-foreground font-sans antialiased; }
@@ -9,7 +9,16 @@
   button, input, select { @apply outline-none focus-visible:ring-2 focus-visible:ring-primary/40; }
   button { @apply transition-colors; }
 }
-.leaflet-container { font-family: 'Inter', sans-serif; background: #e9eee7; }
+/* ── Leaflet / Tailwind conflict fixes ─────────────────────────────────── */
+/* Tailwind's base reset sets `img { max-width:100%; height:auto }` which */
+/* shatters Leaflet tile positioning. Override within the map container.  */
+.leaflet-container { font-family: 'Inter', sans-serif; background: #d4dadc; }
+.leaflet-container img { max-width: none !important; height: auto; }
+.leaflet-tile-pane img { max-width: none !important; height: auto; }
+.leaflet-tile { width: 256px !important; height: 256px !important; }
+.leaflet-pane { z-index: auto; }
+.leaflet-top, .leaflet-bottom { z-index: 1000; }
+
 .leaflet-control-attribution { font-size: 9px !important; }
 .leaflet-popup-content-wrapper { border-radius: 10px; }
 .leaflet-popup-content { margin: 14px; }
