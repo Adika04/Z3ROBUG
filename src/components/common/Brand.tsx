@@ -1,5 +1,5 @@
 import React from 'react'
-import jkrLogo from '../../assets/jkr-logo.png'
+const jkrLogo = 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/JKR_Malaysia_logo.png/1280px-JKR_Malaysia_logo.png'
 
 export function Brand({ dark = true }: { dark?: boolean }) {
   return (
