@@ -150,8 +150,8 @@ CodeFest/
 
 ## 🎭 Live Pitch & Demo Walkthrough
 
-1. **Step 1 — Show the Command Centre:** Open the dashboard at `http://localhost:5173/`. Point out the executive KPIs, the high-priority queue, and the interactive map with color-coded hazard severity markers.
+1. **Step 1 — Show the Command Centre:** Open the dashboard at `http://localhost:5173/` or 'https://z3r0bug.vercel.app/'. Point out the executive KPIs, the high-priority queue, and the interactive map with color-coded hazard severity markers.
 2. **Step 2 — Trigger Live Ingestion:** Click the **`Simulate Telegram`** button in the header. Explain to the judges: *"A citizen just sent a photo and location pin to @AduanPotholeBot on Telegram."*
 3. **Step 3 — Observe Instant Scoring:** Watch a new P5 Critical pin appear live on the map and at the top of the cases list without refreshing the page!
-4. **Step 4 — Review AI Assessment:** Click on the incident. Show the judges Gemini 2.5 Flash's structured vision analysis: severity score 5/5, crater depth hazard assessment, and motorcycle safety risk justification.
+4. **Step 4 — Review AI Assessment:** Click on the incident. Show the judges Gemini 3.5 Flash's structured vision analysis: severity score 5/5, crater depth hazard assessment, and motorcycle safety risk justification.
 5. **Step 5 — Complete Resolution Feedback:** As an authorized JKR officer, click **`Dispatch Repair Crew`** followed by **`Mark as Resolved`**. Show the automated notification dispatch confirmation sent back to the citizen on Telegram!
