@@ -5,7 +5,7 @@ import { Brand } from '../components/common/Brand'
 import { useAuth } from '../context/AuthContext'
 import { useLanguage } from '../context/LanguageContext'
 import { useCases } from '../context/CaseContext'
-import roadHero from '../assets/kuala-lumpur-road.jpg'
+const roadHero = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR75l6a9AsaxumOQkPdJurP3uRqTfSvBikhTVWdvLDVuETn-8vGlNfHjPvD&s=10'
 import type { StaffRole } from '../types'
 
 export function LoginPage() {
