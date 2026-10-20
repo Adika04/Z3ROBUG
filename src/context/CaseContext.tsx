@@ -1,7 +1,13 @@
-import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
+import React, { createContext, useContext, useState, useEffect, useRef, type ReactNode } from 'react'
 import type { Case, CaseStatus } from '../types'
 import { initialCases, samplePhotos } from '../data/initialCases'
-import { getStoredCases, saveStoredCases, updateCaseStatusInDb } from '../services/supabase'
+import {
+  getStoredCases,
+  saveStoredCases,
+  updateCaseStatusInDb,
+  fetchCasesFromSupabase,
+  isSupabaseConfigured,
+} from '../services/supabase'
 
 type CaseContextType = {
   cases: Case[]
@@ -27,6 +33,9 @@ type CaseContextType = {
 
 const CaseContext = createContext<CaseContextType | undefined>(undefined)
 
+/** Polling interval for fetching new reports from Supabase (ms). */
+const POLL_INTERVAL_MS = 15_000
+
 export function CaseProvider({ children }: { children: ReactNode }) {
   const [cases, setCases] = useState<Case[]>(() => getStoredCases())
   const [search, setSearch] = useState('')
@@ -36,11 +45,55 @@ export function CaseProvider({ children }: { children: ReactNode }) {
   const [dateFilter, setDateFilter] = useState('')
   const [toast, setToast] = useState('')
   const [notifications, setNotifications] = useState(false)
+  const prevCountRef = useRef(0)
 
+  // ── Persist to localStorage on every change ──────────────────────────────
   useEffect(() => {
     saveStoredCases(cases)
   }, [cases])
 
+  // ── Load from Supabase on mount + poll every 15 s ────────────────────────
+  useEffect(() => {
+    let cancelled = false
+
+    async function loadFromSupabase() {
+      const supabaseCases = await fetchCasesFromSupabase()
+      if (cancelled) return
+      if (supabaseCases && supabaseCases.length > 0) {
+        // Notify when new cases arrive after initial load
+        if (prevCountRef.current > 0 && supabaseCases.length > prevCountRef.current) {
+          const newest = supabaseCases[0]
+          setToast(`New report ${newest.id} received via Telegram Bot · P${newest.priority}`)
+          setNotifications(true)
+        }
+        prevCountRef.current = supabaseCases.length
+
+        // Merge Supabase reports with demo initialCases (avoiding duplicates)
+        const supabaseIds = new Set(supabaseCases.map((c) => c.id))
+        const merged = [
+          ...supabaseCases,
+          ...initialCases.filter((c) => !supabaseIds.has(c.id)),
+        ]
+        setCases(merged)
+      }
+    }
+
+    loadFromSupabase()
+
+    if (isSupabaseConfigured) {
+      const interval = setInterval(loadFromSupabase, POLL_INTERVAL_MS)
+      return () => {
+        cancelled = true
+        clearInterval(interval)
+      }
+    }
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  // ── Auto-dismiss toasts ──────────────────────────────────────────────────
   useEffect(() => {
     if (toast) {
       const timer = setTimeout(() => setToast(''), 4500)
@@ -72,10 +125,11 @@ export function CaseProvider({ children }: { children: ReactNode }) {
     .sort((a, b) => b.priority - a.priority)
 
   const updateStatus = async (item: Case, status: CaseStatus) => {
-    await updateCaseStatusInDb(item.id, status)
+    const newHistory = [...item.history, status]
+    await updateCaseStatusInDb(item.id, status, newHistory)
     setCases((prev) =>
       prev.map((c) =>
-        c.id === item.id ? { ...c, status, history: [...c.history, status] } : c
+        c.id === item.id ? { ...c, status, history: newHistory } : c
       )
     )
     setToast(
@@ -185,4 +239,3 @@ export function useCases() {
   }
   return context
 }
-
