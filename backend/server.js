@@ -163,8 +163,29 @@ app.post('/api/analyze-road-damage', async (req, res) => {
 
 app.post('/api/simulate-telegram-report', async (req, res) => {
   try {
-    const imageBuffer = fs.readFileSync(SIMULATION_IMAGE_PATH)
-    const imageBase64 = `data:image/jpeg;base64,${imageBuffer.toString('base64')}`
+    let imageBase64 = req.body?.imageBase64
+    let displayImageUrl = imageBase64
+
+    if (!imageBase64 && req.body?.imageUrl) {
+      try {
+        const imgRes = await fetch(req.body.imageUrl)
+        if (imgRes.ok) {
+          const arrayBuf = await imgRes.arrayBuffer()
+          const mime = imgRes.headers.get('content-type') || 'image/jpeg'
+          imageBase64 = `data:${mime};base64,${Buffer.from(arrayBuf).toString('base64')}`
+          displayImageUrl = req.body.imageUrl
+        }
+      } catch (fetchErr) {
+        console.warn('Could not fetch provided imageUrl, using fallback:', fetchErr.message)
+      }
+    }
+
+    if (!imageBase64) {
+      const imageBuffer = fs.readFileSync(SIMULATION_IMAGE_PATH)
+      imageBase64 = `data:image/jpeg;base64,${imageBuffer.toString('base64')}`
+      displayImageUrl = imageBase64
+    }
+
     const aiAnalysis = await analyzeRoadDamage(imageBase64)
     const randomRoad = SIMULATION_ROADS[Math.floor(Math.random() * SIMULATION_ROADS.length)]
     const caseId = `JKR-${Math.floor(1000 + Math.random() * 9000)}`
@@ -179,7 +200,7 @@ app.post('/api/simulate-telegram-report', async (req, res) => {
       lat: randomRoad.lat,
       lng: randomRoad.lng,
       time: 'Just now',
-      image: imageBase64,
+      image: displayImageUrl,
       date: new Date().toISOString().slice(0, 10),
       history: ['Submitted', 'Assessed'],
       justification: aiAnalysis.ai_justification,
@@ -187,28 +208,32 @@ app.post('/api/simulate-telegram-report', async (req, res) => {
       telegramChatId: 987654321,
     }
 
-    if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY) {
-      await fetch(`${SUPABASE_URL}/rest/v1/reports`, {
-        method: 'POST',
-        headers: {
-          apikey: SUPABASE_SERVICE_ROLE_KEY,
-          Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
-          'Content-Type': 'application/json',
-          Prefer: 'return=representation',
-        },
-        body: JSON.stringify({
-          id: caseId,
-          latitude: randomRoad.lat,
-          longitude: randomRoad.lng,
-          road_name: randomRoad.road,
-          severity_score: aiAnalysis.priority_score,
-          issue_type: aiAnalysis.issue_type,
-          ai_justification: aiAnalysis.ai_justification,
-          image_url: imageBase64,
-          telegram_chat_id: 987654321,
-          status: 'Assessed',
-        }),
-      })
+    if (SUPABASE_URL && SUPABASE_SERVICE_ROLE_KEY && !SUPABASE_URL.includes('your-project')) {
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/reports`, {
+          method: 'POST',
+          headers: {
+            apikey: SUPABASE_SERVICE_ROLE_KEY,
+            Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+            'Content-Type': 'application/json',
+            Prefer: 'return=representation',
+          },
+          body: JSON.stringify({
+            id: caseId,
+            latitude: randomRoad.lat,
+            longitude: randomRoad.lng,
+            road_name: randomRoad.road,
+            severity_score: aiAnalysis.priority_score,
+            issue_type: aiAnalysis.issue_type,
+            ai_justification: aiAnalysis.ai_justification,
+            image_url: displayImageUrl,
+            telegram_chat_id: 987654321,
+            status: 'Assessed',
+          }),
+        })
+      } catch (dbErr) {
+        console.warn('Optional Supabase insert skipped:', dbErr.message)
+      }
     }
 
     return res.json({

@@ -16,7 +16,6 @@
 .leaflet-container img { max-width: none !important; height: auto; }
 .leaflet-tile-pane img { max-width: none !important; height: auto; }
 .leaflet-tile { width: 256px !important; height: 256px !important; }
-.leaflet-pane { z-index: auto; }
 .leaflet-top, .leaflet-bottom { z-index: 1000; }
 
 .leaflet-control-attribution { font-size: 9px !important; }
