@@ -4,7 +4,7 @@ import { initialCases } from '../data/initialCases'
 /**
  * Abrar's Deliverable: Supabase Database, Auth & Realtime Sync
  *
- * Added: fetchReportsFromDb() reads the live `reports` table (written by the
+ * fetchReportsFromDb() reads the live `reports` table (written by the
  * Telegram bot) and maps each row to the dashboard's `Case` shape.
  */
 
@@ -97,15 +97,23 @@ export async function fetchReportsFromDb(): Promise<Case[] | null> {
   }
 }
 
+// Alias so older code that calls the previous name keeps working.
+export const fetchCasesFromSupabase = fetchReportsFromDb
+
 /**
- * Updates a case status and appends to lifecycle history
+ * Updates a case status (and optionally its lifecycle history) in Supabase.
  */
 export async function updateCaseStatusInDb(
   caseId: string,
-  newStatus: CaseStatus
+  newStatus: CaseStatus,
+  newHistory?: string[]
 ): Promise<boolean> {
   if (isSupabaseConfigured) {
     try {
+      const body: Record<string, unknown> = { status: newStatus }
+      if (newHistory) body.history = newHistory
+      if (newStatus === 'Resolved') body.resolved_at = new Date().toISOString()
+
       const response = await fetch(`${SUPABASE_URL}/rest/v1/reports?id=eq.${caseId}`, {
         method: 'PATCH',
         headers: {
@@ -114,9 +122,10 @@ export async function updateCaseStatusInDb(
           'Content-Type': 'application/json',
           Prefer: 'return=minimal',
         },
-        body: JSON.stringify({ status: newStatus }),
+        body: JSON.stringify(body),
       })
       if (response.ok) return true
+      console.warn('Supabase PATCH rejected:', response.status, await response.text())
     } catch (err) {
       console.warn('Supabase PATCH failed, falling back to local storage:', err)
     }
@@ -129,7 +138,7 @@ export async function updateCaseStatusInDb(
       ? {
           ...c,
           status: newStatus,
-          history: [...c.history, newStatus],
+          history: newHistory ?? [...c.history, newStatus],
         }
       : c
   )
