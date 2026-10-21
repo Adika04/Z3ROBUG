@@ -1,7 +1,13 @@
 import React, { createContext, useContext, useState, useEffect, useRef, type ReactNode } from 'react'
 import type { Case, CaseStatus } from '../types'
 import { initialCases, samplePhotos } from '../data/initialCases'
-import { getStoredCases, saveStoredCases, updateCaseStatusInDb, fetchReportsFromDb } from '../services/supabase'
+import {
+  getStoredCases,
+  saveStoredCases,
+  updateCaseStatusInDb,
+  isSupabaseConfigured,
+  fetchReportsFromDb,
+} from '../services/supabase'
 
 type CaseContextType = {
   cases: Case[]
