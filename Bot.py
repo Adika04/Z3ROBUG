@@ -57,7 +57,7 @@ try:
 
         genai.configure(api_key=GEMINI_API_KEY)
         _gemini_model = genai.GenerativeModel(
-            "gemini-2.0-flash-lite",
+            "gemini-3.5-flash",
             generation_config={
                 "response_mime_type": "application/json",
                 "temperature": 0.1,

@@ -6,7 +6,7 @@
 ---
 
 ## 🏛️ Project Overview
-The **Civic Road Hazard Reporting & AI Prioritisation System** bridges Malaysian road users and municipal authorities (JKR). Instead of requiring citizens to download a dedicated app or risking platform blocks with web scrapers, citizens submit road hazard photos and native GPS location pins via **Telegram**. Incoming photos are analyzed in real time by **Google Gemini 2.5 Flash**, scored on a 1–5 severity scale with actionable technical justifications, stored in **Supabase PostgreSQL**, and rendered instantly on an interactive **Leaflet/OpenStreetMap** municipal command dashboard.
+The **Civic Road Hazard Reporting & AI Prioritisation System** bridges Malaysian road users and municipal authorities (JKR). Instead of requiring citizens to download a dedicated app or risking platform blocks with web scrapers, citizens submit road hazard photos and native GPS location pins via **Telegram**. Incoming photos are analyzed in real time by **Google Gemini 3.5 Flash**, scored on a 1–5 severity scale with actionable technical justifications, stored in **Supabase PostgreSQL**, and rendered instantly on an interactive **Leaflet/OpenStreetMap** municipal command dashboard.
 
 ---
 
@@ -23,7 +23,7 @@ The **Civic Road Hazard Reporting & AI Prioritisation System** bridges Malaysian
 ┌────────────────────────────────────────────────────────┐
 │  LAYER 2: PROCESSING & AI VISION (Node / Express)       │
 │  - Webhook validation & payload extraction             │
-│  - Google Gemini 2.5 Flash Multimodal Vision API       │
+│  - Google Gemini 3.5 Flash Multimodal Vision API       │
 │  - Formats structured JSON: severity score (1-5)       │
 └──────────────────────────┬─────────────────────────────┘
                            │ SQL Insert (Report + AI Score)
@@ -53,7 +53,7 @@ The **Civic Road Hazard Reporting & AI Prioritisation System** bridges Malaysian
 | Member | Focus Area | Technical Stack | Deliverables |
 | :--- | :--- | :--- | :--- |
 | **Adika** | Ingestion & Backend Logic | Node.js / Express, Telegram Bot API | Webhook server, location pin validator, Telegram feedback notifier |
-| **Nizam** | AI Vision Integration | Gemini 2.5 Flash API, Multimodal Prompts | Image severity assessment function returning JSON score (1-5) & justification |
+| **Nizam** | AI Vision Integration | Gemini 3.5 Flash API, Multimodal Prompts | Image severity assessment function returning JSON score (1-5) & justification |
 | **Abrar** | Database & Authentication | Supabase PostgreSQL, Storage, RBAC | Database schema (`schema.sql`), image bucket, realtime subscriptions |
 | **Sapik** | JKR Web Dashboard UI | React 19, Tailwind CSS, Leaflet | Bilingual command center, interactive GIS map, case resolution workflow |
 
@@ -133,7 +133,7 @@ CodeFest/
 │   │   ├── SettingsPage.tsx  # Pipeline connectors & language preference
 │   │   └── LoginPage.tsx     # Staff sign-in authentication screen
 │   ├── services/
-│   │   ├── gemini.ts         # Nizam's Gemini 2.5 Flash structured AI vision client
+│   │   ├── gemini.ts         # Nizam's Gemini 3.5 Flash structured AI vision client
 │   │   ├── supabase.ts       # Abrar's Supabase REST/Realtime database adapter
 │   │   └── telegram.ts       # Adika's Telegram Bot payload parser & notifications
 │   ├── types/

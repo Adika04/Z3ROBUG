@@ -185,7 +185,7 @@ export function DashboardPage() {
               },
               {
                 icon: Sparkles,
-                title: 'Gemini 2.5 Flash Vision Scored',
+                title: 'Gemini 3.5 Flash Vision Scored',
                 detail: `${cases[1]?.id || 'JKR-1047'} · P${cases[1]?.priority || 4} severity score assigned`,
                 time: '12 min ago',
                 badgeColor: 'bg-purple-100 text-purple-800',

@@ -1,7 +1,7 @@
 import type { GeminiAssessmentResult } from '../types'
 
 /**
- * Nizam's Deliverable: Gemini 2.5 Flash API Integration
+ * Nizam's Deliverable: Gemini 3.5 Flash API Integration
  * Analyzes civic road damage images and returns structured JSON severity ratings.
  */
 

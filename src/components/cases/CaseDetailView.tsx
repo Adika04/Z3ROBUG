@@ -228,7 +228,7 @@ export function CaseDetailView({
                         {index === 0
                           ? 'Received via Telegram Bot with native GPS pin'
                           : histStatus === 'Assessed'
-                            ? 'Gemini 2.5 Flash vision scoring completed'
+                            ? 'Gemini 3.5 Flash vision scoring completed'
                             : histStatus === 'In Progress'
                               ? 'Repair team deployed by JKR Officer'
                               : 'Repairs completed & verified by JKR'}
