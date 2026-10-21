@@ -127,20 +127,44 @@ export function CaseProvider({ children }: { children: ReactNode }) {
     })
     .sort((a, b) => b.priority - a.priority)
 
-  const updateStatus = async (item: Case, status: CaseStatus) => {
+    const updateStatus = async (item: Case, status: CaseStatus) => {
     const newHistory = [...item.history, status]
     await updateCaseStatusInDb(item.id, status, newHistory)
+    
     setCases((prev) =>
       prev.map((c) =>
         c.id === item.id ? { ...c, status, history: newHistory } : c
       )
     )
-    setToast(
-      status === 'Resolved'
-        ? `Case ${item.id} resolved successfully · Telegram notification sent to reporter`
-        : `Case ${item.id} status updated to ${status}`
-    )
-  }
+
+    if (status === 'Resolved') {
+      let delivered = false
+      try {
+        const res = await fetch('/api/notify-telegram', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            chatId: item.telegramChatId,
+            caseId: item.id,
+            road: item.road,
+            area: item.area,
+          }),
+        })
+        delivered = Boolean((await res.json()).sent)
+      } catch {
+        delivered = false
+      }
+      
+      setToast(
+        delivered
+          ? `Case ${item.id} resolved · Telegram notification sent to reporter`
+          : `Case ${item.id} resolved · Telegram notification could not be delivered`
+      )
+    } else {
+      setToast(`Case ${item.id} status updated to ${status}`)
+    }
+  } 
+
 
   const simulateTelegramReport = async () => {
     try {
