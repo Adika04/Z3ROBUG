@@ -1,13 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useRef, type ReactNode } from 'react'
 import type { Case, CaseStatus } from '../types'
 import { initialCases, samplePhotos } from '../data/initialCases'
-import {
-  getStoredCases,
-  saveStoredCases,
-  updateCaseStatusInDb,
-  fetchCasesFromSupabase,
-  isSupabaseConfigured,
-} from '../services/supabase'
+import { getStoredCases, saveStoredCases, updateCaseStatusInDb, fetchReportsFromDb } from '../services/supabase'
 
 type CaseContextType = {
   cases: Case[]
@@ -48,9 +42,16 @@ export function CaseProvider({ children }: { children: ReactNode }) {
   const prevCountRef = useRef(0)
 
   // ── Persist to localStorage on every change ──────────────────────────────
-  useEffect(() => {
-    saveStoredCases(cases)
-  }, [cases])
+   useEffect(() => {
+    let cancelled = false
+    const sync = async () => {
+      const rows = await fetchReportsFromDb()
+      if (!cancelled && rows && rows.length) setCases(rows)
+    }
+    sync()
+    const timer = setInterval(sync, 10000)
+    return () => { cancelled = true; clearInterval(timer) }
+  }, [])
 
   // ── Load from Supabase on mount + poll every 15 s ────────────────────────
   useEffect(() => {
