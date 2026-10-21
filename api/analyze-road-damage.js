@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     }
 
     const model = genAI.getGenerativeModel({
-      model: 'gemini-2.0-flash-lite',
+      model: 'gemini-3.5-flash-lite',
       generationConfig: {
         responseMimeType: 'application/json',
         temperature: 0.1,
