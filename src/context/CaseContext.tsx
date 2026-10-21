@@ -204,7 +204,7 @@ export function CaseProvider({ children }: { children: ReactNode }) {
         date: new Date().toISOString().slice(0, 10),
         history: ['Submitted', 'Assessed'],
         justification:
-          'Gemini 3.5 Flash: Critical pothole identified on two-wheel traffic path. High hazard risk.',
+          'Gemini 3.5 Flash-Lite: Critical pothole identified on two-wheel traffic path. High hazard risk.',
         reporterName: 'Telegram User @citizen_kl',
         telegramChatId: 987654321,
       }

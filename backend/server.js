@@ -103,7 +103,7 @@ app.post('/api/webhook/telegram', async (req, res) => {
     const filePath = fileData.result?.file_path
     const imageUrl = `https://api.telegram.org/file/bot${TELEGRAM_BOT_TOKEN}/${filePath}`
 
-    // Step C: Nizam's Gemini 3.5 Flash AI Vision Analysis
+    // Step C: Nizam's Gemini 3.5 Flash-Lite AI Vision Analysis
     const aiAnalysis = await analyzeWithGemini(imageUrl)
 
     // Step D: Insert into Abrar's Supabase Database
@@ -262,7 +262,7 @@ async function analyzeRoadDamage(imageBase64) {
 
   try {
     const model = genAI.getGenerativeModel({
-      model: 'gemini-3.5-flash',
+      model: 'gemini-3.5-flash-lite',
       generationConfig: {
         responseMimeType: 'application/json',
         temperature: 0.1,
@@ -370,7 +370,7 @@ async function analyzeWithGemini(imageUrl) {
 
   try {
     const model = genAI.getGenerativeModel({
-      model: 'gemini-3.5-flash',
+      model: 'gemini-3.5-flash-lite',
       generationConfig: {
         responseMimeType: 'application/json',
         temperature: 0.1,

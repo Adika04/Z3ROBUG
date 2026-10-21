@@ -103,10 +103,10 @@ export function CaseDetailView({
 
         {/* Right Column: AI Analysis, Status Pipeline, and Feedback */}
         <div className="space-y-6">
-          {/* AI Assessment Card (Gemini 3.5 Flash) */}
+          {/* AI Assessment Card (Gemini 3.5 Flash-Lite) */}
           <Panel>
             <Heading
-              title="AI Assessment — Gemini 3.5 Flash"
+              title="AI Assessment — Gemini 3.5 Flash-Lite"
               subtitle="Multimodal Road Damage Vision Pipeline"
               action={<Sparkles size={16} className="text-primary" />}
             />
@@ -228,7 +228,7 @@ export function CaseDetailView({
                         {index === 0
                           ? 'Received via Telegram Bot with native GPS pin'
                           : histStatus === 'Assessed'
-                            ? 'Gemini 3.5 Flash vision scoring completed'
+                            ? 'Gemini 3.5 Flash-Lite vision scoring completed'
                             : histStatus === 'In Progress'
                               ? 'Repair team deployed by JKR Officer'
                               : 'Repairs completed & verified by JKR'}

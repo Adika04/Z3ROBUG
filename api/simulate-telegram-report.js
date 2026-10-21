@@ -26,7 +26,7 @@ export default async function handler(req, res) {
     const caseId = `JKR-${Math.floor(1000 + Math.random() * 9000)}`
     const priority = 5
     const issueType = 'Deep Pothole'
-    const justification = 'Gemini AI Vision: Severe pothole cavity detected in active vehicle lane. Immediate hazard to two-wheelers.'
+    const justification = 'Gemini 3.5 Flash-Lite Vision: Severe pothole cavity detected in active vehicle lane. Immediate hazard to two-wheelers.'
 
     const caseItem = {
       id: caseId,

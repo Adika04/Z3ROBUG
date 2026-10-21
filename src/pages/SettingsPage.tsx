@@ -56,7 +56,7 @@ export function SettingsPage() {
               <div className="rounded-lg border border-border p-3.5 bg-slate-50/50">
                 <div className="flex items-center gap-2 text-xs font-bold text-foreground">
                   <Sparkles size={15} className="text-purple-500" />
-                  <span>Layer 2: Gemini 3.5 Flash</span>
+                  <span>Layer 2: Gemini 3.5 Flash-Lite</span>
                 </div>
                 <p className="mt-1 text-[11px] text-muted-foreground">
                   Multimodal vision assessment · 1-5 severity scale & justification.

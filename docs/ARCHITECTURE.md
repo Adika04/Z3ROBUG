@@ -18,7 +18,7 @@ This document provides the technical specification and data payload contracts fo
 [ Layer 1: Ingestion API (Telegram Webhook) ]
        │ 
        ▼ Image URL / Base64 + Coordinates
-[ Layer 2: Processing & AI (Express + Gemini 3.5 Flash) ]
+[ Layer 2: Processing & AI (Express + Gemini 3.5 Flash-Lite) ]
        │ 
        ▼ Structured JSON (Severity 1-5, Justification)
 [ Layer 3: Persistence & Auth (Supabase PostgreSQL) ]
@@ -45,7 +45,7 @@ interface TelegramIngestionPayload {
 }
 ```
 
-### 3.2 Gemini 3.5 Flash Response Contract (Nizam)
+### 3.2 Gemini 3.5 Flash-Lite Response Contract (Nizam)
 ```json
 {
   "issueType": "Deep Pothole",

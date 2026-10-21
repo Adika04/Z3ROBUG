@@ -50,7 +50,7 @@ function MainLayout() {
             </span>
             <span className="flex items-center gap-1.5 font-medium">
               <ShieldCheck size={13} className="text-teal" />
-              UTP Codefest 2026 Prototype · Powered by Gemini 3.5 Flash & Supabase
+              UTP Codefest 2026 Prototype · Powered by Gemini 3.5 Flash-Lite & Supabase
             </span>
           </footer>
         </main>

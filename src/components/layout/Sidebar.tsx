@@ -108,7 +108,7 @@ export function Sidebar({
               {t('Live Civic Pipeline', 'Saluran Awam Aktif')}
             </div>
             <p className="mt-1 pl-3.5 text-[9px] text-slate-400">
-              Telegram Bot · Gemini 3.5 Flash · Supabase
+              Telegram Bot · Gemini 3.5 Flash-Lite · Supabase
             </p>
           </div>
 
