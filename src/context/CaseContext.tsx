@@ -34,7 +34,10 @@ type CaseContextType = {
 const CaseContext = createContext<CaseContextType | undefined>(undefined)
 
 /** Polling interval for fetching new reports from Supabase (ms). */
-const POLL_INTERVAL_MS = 15_000
+const POLL_INTERVAL_MS = 5_000
+
+// Cheap fingerprint so we only re-render (and reset map pins) when data really changed.
+const signature = (list: Case[]) => list.map((c) => `${c.id}|${c.status}|${c.priority}`).join(',')
 
 export function CaseProvider({ children }: { children: ReactNode }) {
   const [cases, setCases] = useState<Case[]>(() => getStoredCases())
@@ -48,23 +51,16 @@ export function CaseProvider({ children }: { children: ReactNode }) {
   const prevCountRef = useRef(0)
 
   // ── Persist to localStorage on every change ──────────────────────────────
-   useEffect(() => {
-    let cancelled = false
-    const sync = async () => {
-      const rows = await fetchReportsFromDb()
-      if (!cancelled && rows && rows.length) setCases(rows)
-    }
-    sync()
-    const timer = setInterval(sync, 10000)
-    return () => { cancelled = true; clearInterval(timer) }
-  }, [])
+  useEffect(() => {
+    saveStoredCases(cases)
+  }, [cases])
 
-  // ── Load from Supabase on mount + poll every 15 s ────────────────────────
+  // ── Load from Supabase on mount + poll ───────────────────────────────────
   useEffect(() => {
     let cancelled = false
 
     async function loadFromSupabase() {
-      const supabaseCases = await fetchCasesFromSupabase()
+      const supabaseCases = await fetchReportsFromDb()
       if (cancelled) return
       if (supabaseCases && supabaseCases.length > 0) {
         // Notify when new cases arrive after initial load
@@ -81,7 +77,7 @@ export function CaseProvider({ children }: { children: ReactNode }) {
           ...supabaseCases,
           ...initialCases.filter((c) => !supabaseIds.has(c.id)),
         ]
-        setCases(merged)
+        setCases((prev) => (signature(prev) === signature(merged) ? prev : merged))
       }
     }
 
